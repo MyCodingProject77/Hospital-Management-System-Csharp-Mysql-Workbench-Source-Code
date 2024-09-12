@@ -1,0 +1,214 @@
+   using MySql.Data.MySqlClient;
+
+   Database Connection Code
+
+
+   private MySqlConnection connection;
+public DatabaseConnection()
+{
+    string connectionString = "Server=127.0.0.1;Database=HospitalDB;Uid=root;Pwd=Msixyz7777@;";
+    connection = new MySqlConnection(connectionString);
+
+}
+
+public MySqlConnection GetConnection()
+{
+    return connection;
+}
+
+
+
+
+  Insert Code
+
+  int patientid = int.Parse(textBox1.Text);
+string patientname = textBox2.Text;
+int age = int.Parse(textBox3.Text);
+string gender = textBox4.Text;
+string address = textBox5.Text;
+
+string query = "insert into patients(patientid,patientname,age,gender,address) values(@patientid,@patientname,@age,@gender,@address)";
+using (MySqlConnection conn = new DatabaseConnection().GetConnection())
+{
+    conn.Open();
+    using (MySqlCommand cmd =  new MySqlCommand(query, conn))
+    {
+        cmd.Parameters.AddWithValue("@PatientID", patientid);
+        cmd.Parameters.AddWithValue("@PatientName", patientname);
+        cmd.Parameters.AddWithValue("@Age", age);
+        cmd.Parameters.AddWithValue("@Gender", gender);
+        cmd.Parameters.AddWithValue("@Address", address);
+        cmd.ExecuteNonQuery();
+
+    }
+}
+MessageBox.Show("Record Inserted Successfully");
+PatientData();
+
+
+
+
+   Update Code
+
+   int patientid = int.Parse(textBox1.Text);
+string patientname = textBox2.Text;
+int age = int.Parse(textBox3.Text);
+string gender = textBox4.Text;
+string address = textBox5.Text;
+
+string query = "update patients set patientname=@patientname,age=@age,gender=@gender,address=@address where patientid=@patientid";
+using (MySqlConnection conn = new DatabaseConnection().GetConnection())
+{
+    conn.Open();
+    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+    {
+        cmd.Parameters.AddWithValue("@PatientID", patientid);
+        cmd.Parameters.AddWithValue("@PatientName", patientname);
+        cmd.Parameters.AddWithValue("@Age", age);
+        cmd.Parameters.AddWithValue("@Gender", gender);
+        cmd.Parameters.AddWithValue("@Address", address);
+        cmd.ExecuteNonQuery();
+
+    }
+}
+MessageBox.Show("Record Updated Successfully");
+PatientData();
+
+
+
+     Delete Code
+
+     int patientid = int.Parse(textBox1.Text);
+
+
+string query = "delete from patients where patientid=@patientid";
+using (MySqlConnection conn = new DatabaseConnection().GetConnection())
+{
+    conn.Open();
+    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+    {
+        cmd.Parameters.AddWithValue("@PatientID", patientid);
+        cmd.ExecuteNonQuery();
+
+    }
+}
+MessageBox.Show("Record Deleted Successfully");
+PatientData();
+
+
+
+
+      PatientData Code
+
+
+      string query = "select * from patients";
+using (MySqlConnection conn = new DatabaseConnection().GetConnection())
+{
+    conn.Open();
+    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+    {
+        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+        {
+            DataTable dataTable = new DataTable();
+            adapter.Fill(dataTable);
+            dataGridView1.DataSource = dataTable;
+        }
+
+
+
+
+    }
+}
+
+
+
+    
+         CREATE DATABASE HospitalDB;
+
+Use HospitalDB;
+
+CREATE TABLE patients(
+`patientid` INT NOT NULL,
+`patientname` VARCHAR(100) NOT NULL,
+`age` INT,
+`gender` VARCHAR(100),
+`address` VARCHAR(100),
+PRIMARY KEY (`patientid`)
+
+);
+
+drop table doctos;
+
+CREATE TABLE doctors(
+`doctorid` INT NOT NULL,
+`doctorname` VARCHAR(100) NOT NULL,
+`speciality` VARCHAR(100),
+`phone` VARCHAR(100),
+`department` VARCHAR(100),
+PRIMARY KEY (`doctorid`)
+
+);
+
+CREATE TABLE nurses(
+`nurseid` INT NOT NULL,
+`nursename` VARCHAR(100) NOT NULL,
+`phone` VARCHAR(100),
+`department` VARCHAR(100),
+PRIMARY KEY (`nurseid`)
+
+);
+
+CREATE TABLE appointments(
+`aid` INT NOT NULL,
+`patientname` VARCHAR(100) NOT NULL,
+`doctorname` VARCHAR(100),
+`date_created` DATE,
+`status` VARCHAR(100),
+PRIMARY KEY (`aid`)
+
+);
+
+CREATE TABLE records(
+`mid` INT NOT NULL,
+`patientname` VARCHAR(100) NOT NULL,
+`doctorname` VARCHAR(100),
+`nurse` VARCHAR(100),
+`diagnosis` VARCHAR(100),
+`prescription` VARCHAR(100),
+`treatment` VARCHAR(100),
+PRIMARY KEY (`mid`)
+
+);
+
+CREATE TABLE bills(
+`bid` INT NOT NULL,
+`patientname` VARCHAR(100) NOT NULL,
+`amount` DECIMAL(10, 2),
+`status` VARCHAR(100),
+PRIMARY KEY (`bid`)
+
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
